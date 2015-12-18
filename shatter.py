@@ -47,9 +47,9 @@ def plot_around(z, scale, pts=40):
 
 N = 12
 neighborhood = 1e-6
-search_scale = 3e-6
+search_scale = 8e-6
 iters = 1000
-rounds_per_attempt = 150000
+rounds_per_attempt = 800000
 
 class Attempt:
 	def __init__(self):
@@ -62,6 +62,18 @@ class Attempt:
 		self.searcher.find_perturbations(scale=search_scale, iters=iters, verify_iters=iters, rounds=rounds)
 		self.total_rounds += rounds
 
+# Good algorithm.
+print "N =", N
+attempts = [Attempt() for i in xrange(10)]
+print "Generated attempts."
+for a in attempts:
+	a.do_work(50000)
+best_attempt = max(attempts, key=lambda a: a.searcher.fraction_shattered())
+while True:
+	best_attempt.do_work(100000)
+	print "Percent shattered: %f%%" % (best_attempt.searcher.fraction_shattered() * 100.0)
+
+# Bad algorithm.
 attempts = []
 while True:
 	print "=== Beginning epoch."
